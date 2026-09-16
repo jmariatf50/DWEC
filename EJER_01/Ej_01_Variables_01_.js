@@ -10,4 +10,30 @@ const tieneMascota = true
 //Modifico la edad
 edad = 22
 
-console.timeLog(nombre)
+//tieneMascota = false -- lo comento debido a que dara error
+
+//Saco por consola lo que tiene almacenado cada parametro
+console.log(nombre, typeof nombre)
+console.log(edad, typeof edad)
+console.log(tieneMascota, typeof tieneMascota)
+
+//Creo esta variable para almacenar la frase
+let frase
+
+//Este if else se utiliza para comprobar si tienen mascota y sacar un mensaje diferente
+if (tieneMascota == true){
+
+    frase =  nombre + " tiene " + edad + " años y sí tiene mascota." 
+
+}
+
+else{
+
+    frase =  nombre + " tiene " + edad + " años y no tiene mascota." 
+
+}
+
+//Saco la frase por pantalla
+console.log(frase)
+
+

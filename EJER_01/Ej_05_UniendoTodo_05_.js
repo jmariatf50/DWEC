@@ -53,10 +53,10 @@ let estudiantesAprobados = estudiantesConId.filter(
 //Mostrar mensaje felicitaciones a los aprovados
 
 estudiantesAprobados.forEach(estudiante => {
-    console.log(
-        "¡Felicidades " + estudiante.nombre 
-        + " has aprobado con " 
-        + estudiante.calificacion + "!")
+
+    const aprobados = `¡Felicidades ${estudiante.nombre} has aprobado con ${estudiante.calificacion}!`
+         
+        console.log(aprobados)
 
     }
 )
@@ -69,11 +69,11 @@ estudiantes.forEach(estudiante => {
 
     if (estudiante.aprobado !== aprobadoCorrecto) {
 
-        console.log("Incoherencia en el registro de " 
-            + estudiante.nombre + ": calificacion = " 
-            + estudiante.calificacion + " aprobado = " 
-            +  estudiante.aprobado)
+        const mesajeComprobador = `Incoherencia en el registro de ${estudiante.nombre}: calificacion = ${estudiante.calificacion} | aprobado = ${estudiante.aprobado}`
+        console.log(mesajeComprobador)
     
         }
+
     }
+
 )

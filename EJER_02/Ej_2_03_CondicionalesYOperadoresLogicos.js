@@ -1,4 +1,4 @@
-function retirarDinero(saldo, cantidad, tieneTarjetaCredito) {
+ function retirarDinero(saldo, cantidad, tieneTarjetaCredito) {
 
     if (saldo >= cantidad) {
 
@@ -7,7 +7,7 @@ function retirarDinero(saldo, cantidad, tieneTarjetaCredito) {
         console.log(`Retiro exitoso. Saldo restante: ${nuevoSaldo}`)
 
     } 
-    
+                     
     else if (tieneTarjetaCredito) {
 
         console.log("Saldo insuficiente, pagando con tarjeta de crédito")

@@ -64,6 +64,7 @@ let resumenCursos = cursos.map(curso => {
     let suma = curso.estudiantes.reduce(
 
         (total, estudiante) => total + estudiante.calificacion, 0
+        
     )
 
     let promedio = suma / curso.estudiantes.length

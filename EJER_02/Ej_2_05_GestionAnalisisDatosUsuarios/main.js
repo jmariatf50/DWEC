@@ -31,4 +31,4 @@ mayoresDeEdad.forEach((usuario) => {
 
 const promedioEdad = calcularPromedioEdad(usuarios)
 
-console.log(`La edad promodio de los usuarios es: ${promedioEdad.toFixed(2)}`)
+console.log(`La edad promedio de los usuarios es: ${promedioEdad.toFixed(2)}`)

@@ -1,16 +1,15 @@
-function esContrasenaValida(contrasena) {
+ function esContraseñaValida(contraseña) {
 
-  return contrasen
-a.length >= 8
+  return contraseña.length >= 8
 
 }
 
 const contrasenas = ['1234', 'miClave2024', 'abc']
 
 // Usamos una función anónima dentro de map()
-const resultado = contrasenas.map(function(contrasena) {
+const resultado = contraseñas.map(function(contraseña) {
 
-  return esContrasenaValida(contrasena)
+  return esContraseñaValida(contrasena)
 
     }
 

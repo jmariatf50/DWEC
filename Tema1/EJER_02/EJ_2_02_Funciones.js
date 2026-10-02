@@ -16,8 +16,6 @@ const calcularAreaTrianguloArrow = (base = 10, altura= 5) => {
 
 }
 
-
-
 console.log("Area del triangulo: ", calcularAreaRectangulo(8, 4))
 
 console.log("Área del triángulo:", calcularAreaTriangulo(8, 4))

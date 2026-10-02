@@ -4,12 +4,12 @@
 
 }
 
-const contrasenas = ['1234', 'miClave2024', 'abc']
+const contraseñas = ['1234', 'miClave2024', 'abc']
 
 // Usamos una función anónima dentro de map()
 const resultado = contraseñas.map(function(contraseña) {
 
-  return esContraseñaValida(contrasena)
+  return esContraseñaValida(contraseña)
 
     }
 
@@ -18,8 +18,7 @@ const resultado = contraseñas.map(function(contraseña) {
 console.log(resultado); // [false, true, false]
 
 /*Explicación
-
-//La función:
+La función:
 
 function esContrasenaValida(contrasena) {
 

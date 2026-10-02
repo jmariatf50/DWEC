@@ -32,40 +32,43 @@ const empleados = [
 ];
 
 function agregarEmpleado(empleado) {
-    empleados.push(empleado);
+    empleados.push(empleado)
 }
 
 function eliminarEmpleado(id) {
-    const indice = empleados.findIndex(empleado => empleado.id === id);
+
+    const indice = empleados.findIndex(empleado => empleado.id === id)
 
     if (indice !== -1) {
-        empleados.splice(indice, 1);
+        empleados.splice(indice, 1)
     }
+
 }
 
 function buscarPorDepartamento(departamento) {
-    return empleados.filter(empleado => {
-        return empleado.departamento === departamento;
-    });
+    return empleados.filter(empleado => empleado.departamento === departamento)
 }
 
 function calcularSalarioPromedio() {
     if (empleados.length === 0) {
-        return 0;
+        return 0
     }
 
     const totalSalarios = empleados.reduce((total, empleado) => {
-        return total + empleado.salario;
-    }, 0);
+        return total + empleado.salario
+    }, 0)
 
-    return totalSalarios / empleados.length;
+    return totalSalarios / empleados.length
 }
 
 function obtenerEmpleadosOrdenadosPorSalario() {
     return [...empleados].sort((a, b) => {
-        return b.salario - a.salario;
-    });
+        return b.salario - a.salario
+    })
 }
+
+//Tipo de export para varias funciones
+// export function nombre(){} para individual
 
 export {
     agregarEmpleado,
@@ -73,4 +76,4 @@ export {
     buscarPorDepartamento,
     calcularSalarioPromedio,
     obtenerEmpleadosOrdenadosPorSalario
-};
+}

@@ -1,6 +1,6 @@
 
-import mostrarPerfil,{
-
+import {
+    mostrarPerfil,
     crearPerfil,
     esMayorDeEdad,
     obtenerMayoresDeEdad,

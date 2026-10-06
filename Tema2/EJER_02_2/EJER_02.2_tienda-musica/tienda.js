@@ -160,7 +160,7 @@ export const productoMasCaro = (catalogo) => {
 //     { equipos: 7, accesorios: 29, discos: 14 }
 export const unidadesPorCategoria = (catalogo) => {
   // Tu código aquí
-   return catalogo.reduce((resultado, product) => {
+   return catalogo.reduce((resultado, producto) => {
     
     if(resultado[producto.categoria] === undefined){
 
@@ -178,12 +178,18 @@ export const unidadesPorCategoria = (catalogo) => {
 
 // 3.4 Devuelve true si hay AL MENOS un producto agotado.
 export const hayAgotados = (catalogo) => {
-  // Tu código aquí
+ 
+  return catalogo.some((producto) => producto.stock === 0)
+
 };
 
 // 3.5 Devuelve true si TODOS los precios son números mayores que 0.
 export const preciosValidos = (catalogo) => {
-  // Tu código aquí
+
+   return catalogo.every(
+
+    (producto) => typeof producto.precio === 'number' && producto.precio > 0)
+
 };
 
 // ================================================================
@@ -200,18 +206,54 @@ export const preciosValidos = (catalogo) => {
 //     }
 //     ¡Ojo! La cantidad debe ser un número, no un string.
 export const parsearPedido = (texto) => {
-  // Tu código aquí
+
+  const partes = texto.split('|')
+
+  const cliente = partes[0]
+
+  const lineas = partes[1].split(';').map((linea) => {
+    const [nombre, cantidad] = linea.split(':')
+
+    return {
+      nombre: nombre,
+      cantidad: Number(cantidad)
+
+    }
+
+  })
+
+  return {
+    cliente,
+    lineas
+  }
+
 };
 
 // 4.2 Devuelve true si TODOS los productos del pedido existen
 //     y tienen stock suficiente.
 export const puedeServirse = (catalogo, pedido) => {
-  // Tu código aquí
+   
+  return pedido.lineas.every((linea) => {
+    
+    const producto = catalogo.find((producto) => producto.nombre === linea.nombre)
+
+    return producto !== undefined && producto.stock >= linea.cantidad
+  
+  })
+
 };
 
 // 4.3 Devuelve el importe total del pedido.
 export const totalPedido = (catalogo, pedido) => {
   // Tu código aquí
+    return pedido.lineas.reduce((total, linea) => {
+
+    const producto = catalogo.find((producto) => producto.nombre === linea.nombre)
+
+    return total + producto.precio * linea.cantidad
+
+  }, 0);
+
 };
 
 // 4.4 Devuelve un catálogo NUEVO en el que se ha restado del stock
@@ -219,6 +261,25 @@ export const totalPedido = (catalogo, pedido) => {
 //     Pista: { ...producto, stock: nuevoStock } crea una copia del objeto.
 export const servirPedido = (catalogo, pedido) => {
   // Tu código aquí
+  return catalogo.map((producto) => {
+
+    const linea = pedido.lineas.find((linea) => linea.nombre === producto.nombre)
+
+    if (linea) {
+
+      return {
+
+        ...producto,
+        stock: producto.stock - linea.cantidad
+      
+      }
+
+    }
+
+    return producto
+
+  })
+
 };
 
 // 4.5 Devuelve el ticket del pedido como un único texto:
@@ -229,6 +290,23 @@ export const servirPedido = (catalogo, pedido) => {
 //     Pista: construye un array de líneas y únelas con '\n'.
 export const generarTicket = (catalogo, pedido) => {
   // Tu código aquí
+
+    const lineas = pedido.lineas.map((linea) => {
+
+    const producto = catalogo.find((producto) => producto.nombre === linea.nombre)
+
+    const importe = producto.precio * linea.cantidad
+
+    return `${linea.cantidad} x ${linea.nombre} = ${importe} €`
+  
+  })
+
+  lineas.unshift(`Cliente: ${pedido.cliente}`)
+
+  lineas.push(`TOTAL: ${totalPedido(catalogo, pedido)} €`)
+
+  return lineas.join('\n')
+
 };
 
 // ================================================================
@@ -240,25 +318,59 @@ export const generarTicket = (catalogo, pedido) => {
 //     saca y devuelve el primer pedido de la cola.
 export const atenderSiguiente = (cola) => {
   // Tu código aquí
+  return cola.shift()
+
 };
 
 // 5.2 Coloca el pedido al PRINCIPIO de la cola y devuelve
 //     la nueva longitud de la cola.
 export const agregarUrgente = (cola, pedido) => {
   // Tu código aquí
+  return cola.unshift(pedido)
+
 };
 
 // 5.3 Añade el nombre al final del carrito y apunta la acción en el
 //     historial: { accion: 'agregar', nombre }
 export const agregarAlCarrito = (carrito, historial, nombre) => {
   // Tu código aquí
-};
+    carrito.push(nombre)
+
+  historial.push({
+
+    accion: 'agregar',
+    nombre: nombre
+
+  })
+
+}
 
 // 5.4 Quita la PRIMERA aparición del nombre en el carrito y apunta en
 //     el historial: { accion: 'quitar', nombre, posicion }
 //     Devuelve true, o false (sin tocar nada) si no estaba.
 export const quitarDelCarrito = (carrito, historial, nombre) => {
   // Tu código aquí
+
+   const posicion = carrito.indexOf(nombre)
+
+  if (posicion === -1) {
+
+    return false
+
+  }
+
+  carrito.splice(posicion, 1)
+
+  historial.push({
+
+    accion: 'quitar',
+    nombre: nombre,
+    posicion: posicion
+
+  })
+
+  return true;
+
 };
 
 // 5.5 PILA (la última acción es la primera en deshacerse):
@@ -268,6 +380,40 @@ export const quitarDelCarrito = (carrito, historial, nombre) => {
 //     Devuelve true, o false si el historial estaba vacío.
 export const deshacer = (carrito, historial) => {
   // Tu código aquí
+
+  if (historial.length === 0) {
+
+    return false
+
+  }
+
+  const accion = historial.pop()
+
+  if (accion.accion === 'agregar') {
+    // Quitamos la ÚLTIMA aparición.
+    const posicion = carrito.lastIndexOf(accion.nombre)
+
+    if (posicion !== -1) {
+
+      carrito.splice(posicion, 1)
+
+    }
+
+    return true
+
+  }
+
+  if (accion.accion === 'quitar') {
+
+    // Recuperamos el elemento en su posición original.
+    carrito.splice(accion.posicion, 0, accion.nombre)
+
+    return true
+
+  }
+
+  return false
+
 };
 
 // ================================================================
@@ -280,12 +426,30 @@ export const deshacer = (carrito, historial) => {
 //     Devuelve { catalogo, servidos, rechazados }
 export const procesarCola = (catalogo, cola) => {
   // Tu código aquí
+    const servidos = []
+  const rechazados = []
+
+  while (cola.length > 0) {
+    const pedido = atenderSiguiente(cola)
+
+    if (puedeServirse(catalogo, pedido)) {
+      catalogo = servirPedido(catalogo, pedido)
+      servidos.push(pedido)
+    } else {
+      rechazados.push(pedido)
+    }
+  }
+
+  return { catalogo, servidos, rechazados }
 };
 
 // 6.2 Recibe un array de pedidos y devuelve los nombres de los productos
 //     vendidos, SIN repetidos y en orden alfabético.
 export const productosVendidos = (pedidos) => {
   // Tu código aquí
+      return [...new Set(
+    pedidos.flatMap(pedido => pedido.lineas.map(linea => linea.nombre))
+  )].sort()
 };
 
 // 6.3 Devuelve un array de textos con una barra por producto:
@@ -293,4 +457,7 @@ export const productosVendidos = (pedidos) => {
 //     Obligatorio: crea la barra con new Array(...).fill('■')
 export const graficoStock = (catalogo) => {
   // Tu código aquí
+    return catalogo.map(producto =>
+    `${producto.nombre}: ${new Array(producto.stock).fill('■').join('')} (${producto.stock})`
+  )
 };

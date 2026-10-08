@@ -30,7 +30,7 @@ export const crearCatalogo = (matriz) => {
     precio: fila[2],
     stock: fila[3]
 
-  }))
+  })) 
 
 };
 

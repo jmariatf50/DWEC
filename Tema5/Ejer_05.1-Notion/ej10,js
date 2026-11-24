@@ -1,0 +1,90 @@
+// Simulamos un servidor que contiene tres libros.
+const titulos = {
+    1: 'El nombre de la rosa',
+    2: 'Cien años de soledad',
+    3: 'Fahrenheit 451',
+};
+
+// Función que busca un libro por su identificador.
+const buscarLibro = (id) =>
+    new Promise((resolver, rechazar) => {
+
+        // Simulamos una espera de 500 milisegundos.
+        setTimeout(() => {
+
+            if (titulos[id]) {
+                // Si existe, devolvemos el libro encontrado.
+                resolver({ id, titulo: titulos[id] });
+
+            } else {
+                // Si no existe, rechazamos la promesa.
+                rechazar(new Error(`No existe ningún libro con id ${id}`));
+            }
+
+        }, 500);
+    });
+
+// Función que calcula los segundos que han pasado desde el inicio.
+const segundosDesde = (inicio) =>
+    ((Date.now() - inicio) / 1000).toFixed(1);
+
+
+// APARTADO 1: PROMESAS UNA DETRÁS DE OTRA
+
+// Guardamos el momento en el que empezamos.
+let inicio = Date.now();
+
+// Esperamos a que termine cada búsqueda antes de empezar la siguiente.
+await buscarLibro(1);
+await buscarLibro(2);
+await buscarLibro(3);
+
+// Mostramos el tiempo total de las tres búsquedas.
+console.log(`Una detrás de otra: ${segundosDesde(inicio)} s`);
+
+
+// APARTADO 2: PROMISE.ALL
+
+// Volvemos a guardar el tiempo de inicio.
+inicio = Date.now();
+
+// Promise.all ejecuta las tres búsquedas al mismo tiempo.
+// Esperamos a que todas las promesas se cumplan.
+await Promise.all([
+    buscarLibro(1),
+    buscarLibro(2),
+    buscarLibro(3)
+]);
+
+// Mostramos el tiempo que han tardado las tres búsquedas.
+console.log(`Con Promise.all: ${segundosDesde(inicio)} s`);
+
+
+// APARTADO 3: PROMISE.ALLSETTLED
+
+// Pedimos tres libros, incluyendo uno que no existe.
+const resultados = await Promise.allSettled([
+    buscarLibro(1),
+    buscarLibro(99),
+    buscarLibro(3)
+]);
+
+// Creamos dos contadores para guardar los resultados.
+let cumplidas = 0;
+let rechazadas = 0;
+
+// Recorremos los resultados de las promesas.
+for (const resultado of resultados) {
+
+    if (resultado.status === 'fulfilled') {
+        // Si la promesa se cumple, aumentamos el contador.
+        cumplidas++;
+
+    } else {
+        // Si la promesa se rechaza, aumentamos este contador.
+        rechazadas++;
+    }
+}
+
+// Mostramos cuántas promesas se han cumplido y rechazado.
+console.log(`allSettled: ${cumplidas} cumplidas y ${rechazadas} rechazada`);

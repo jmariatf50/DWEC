@@ -1,10 +1,10 @@
-// Nombre y apellidos: José María Trabadelo Fernández
 
 import { tareasIniciales } from './datos.js';
 
 // ============================================================
-// Constantes y elementos de la página (ya definidos: no los cambies)
+// Constantes y elementos de la página (NO MODIFICAR)
 // ============================================================
+
 const ESTADOS = ['porhacer', 'encurso', 'hecha'];
 const LIMITE_HORAS = 40;
 
@@ -29,13 +29,10 @@ const contadores = {
   hecha: document.querySelector('#num-hecha')
 };
 
-// Se desactiva la validación del navegador: los mensajes los muestras tú
 formularioTarea.noValidate = true;
 
-// Tareas del tablero. Es una copia: los datos originales no se tocan
 let tareas = tareasIniciales.map((tarea) => ({ ...tarea }));
 
-// Repinta todo a partir del array de tareas
 const repintar = () => {
   pintarTablero(buscarTareas(tareas, buscador.value));
   pintarResumen(tareas);
@@ -43,10 +40,11 @@ const repintar = () => {
 
 
 // ============================================================
-// APARTADO 1 · Formulario y validación
+// APARTADO 1 · FORMULARIO Y VALIDACIÓN
 // ============================================================
 
-// 1.1 · Devuelve el texto del error de un campo según su `validity`
+// 1.1 · mensajeDeError(campo)
+
 const mensajeDeError = (campo) => {
   if (campo.validity.valueMissing) {
     return 'Este campo es obligatorio';
@@ -70,7 +68,9 @@ const mensajeDeError = (campo) => {
   return '';
 };
 
-// 1.2 · Muestra u oculta el error de un campo y devuelve si es válido
+
+// 1.2 · validarCampo(campo)
+
 const validarCampo = (campo) => {
   const mensaje = mensajeDeError(campo);
   const elementoError = campo.nextElementSibling;
@@ -81,7 +81,9 @@ const validarCampo = (campo) => {
   return mensaje === '';
 };
 
-// 1.3 · Aplica o quita el error personalizado de #horas
+
+// 1.3 · comprobarHoras()
+
 const comprobarHoras = () => {
   const horasPendientes = tareas
     .filter((tarea) => tarea.estado !== 'hecha')
@@ -100,7 +102,9 @@ const comprobarHoras = () => {
   }
 };
 
-// 1.4 · Deja el formulario como recién cargado
+
+// 1.4 · limpiarFormulario()
+
 const limpiarFormulario = () => {
   formularioTarea.reset();
 
@@ -127,7 +131,9 @@ const limpiarFormulario = () => {
   mensajeFormulario.textContent = '';
 };
 
+
 // 1.5 · Eventos del formulario
+
 formularioTarea.addEventListener('change', (evento) => {
   const campo = evento.target;
 
@@ -152,10 +158,11 @@ formularioTarea.addEventListener('keydown', (evento) => {
 
 
 // ============================================================
-// APARTADO 2 · Cálculos con los datos (funciones puras)
+// APARTADO 2 · CÁLCULOS CON LOS DATOS
 // ============================================================
 
-// 2.1 · Tareas cuyo título o asignatura contienen el texto buscado
+// 2.1 · buscarTareas(lista, texto)
+
 const buscarTareas = (lista, texto) => {
   const textoNormalizado = texto.trim().toLowerCase();
 
@@ -174,7 +181,9 @@ const buscarTareas = (lista, texto) => {
   });
 };
 
-// 2.2 · Reparte las tareas en un objeto con una lista por cada estado
+
+// 2.2 · agruparPorEstado(lista)
+
 const agruparPorEstado = (lista) => {
   const grupos = {
     porhacer: [],
@@ -191,7 +200,9 @@ const agruparPorEstado = (lista) => {
   return grupos;
 };
 
-// 2.3 · Suma las horas de cada asignatura, de más a menos horas
+
+// 2.3 · horasPorAsignatura(lista)
+
 const horasPorAsignatura = (lista) => {
   const acumuladas = {};
 
@@ -216,13 +227,19 @@ const horasPorAsignatura = (lista) => {
 
 
 // ============================================================
-// APARTADO 3 · Pintar la página
+// APARTADO 3 · PINTAR LA PÁGINA
 // ============================================================
 
-// 3.1 · Devuelve, sin insertarla, la tarjeta <li> de una tarea
+// 3.1 · crearTarjeta(tarea)
+
 const crearTarjeta = (tarea) => {
   const tarjeta = document.createElement('li');
-  tarjeta.classList.add('tarjeta', `prioridad-${tarea.prioridad}`);
+
+  tarjeta.classList.add(
+    'tarjeta',
+    `prioridad-${tarea.prioridad}`
+  );
+
   tarjeta.dataset.id = tarea.id;
 
   const titulo = document.createElement('strong');
@@ -258,7 +275,9 @@ const crearTarjeta = (tarea) => {
   return tarjeta;
 };
 
-// 3.2 · Reparte las tarjetas y actualiza los contadores
+
+// 3.2 · pintarTablero(lista)
+
 const pintarTablero = (lista) => {
   const grupos = agruparPorEstado(lista);
 
@@ -273,17 +292,22 @@ const pintarTablero = (lista) => {
   });
 };
 
-// 3.3 · Pinta las horas por asignatura y el progreso
+
+// 3.3 · pintarResumen(lista)
+
 const pintarResumen = (lista) => {
   listaHoras.replaceChildren();
 
   horasPorAsignatura(lista).forEach(({ asignatura, horas }) => {
     const elemento = document.createElement('li');
+
     elemento.textContent = `${asignatura} — ${horas} h`;
+
     listaHoras.append(elemento);
   });
 
   const total = lista.length;
+
   const hechas = lista.filter(
     (tarea) => tarea.estado === 'hecha'
   ).length;
@@ -297,12 +321,15 @@ const pintarResumen = (lista) => {
 
 
 // ============================================================
-// APARTADO 4 · Interacción
+// APARTADO 4 · INTERACCIÓN
 // ============================================================
 
-// 4.1 · Mueve una tarea `paso` columnas
+// 4.1 · moverTarea(id, paso)
+
 const moverTarea = (id, paso) => {
-  const tarea = tareas.find((elemento) => elemento.id === id);
+  const tarea = tareas.find(
+    (elemento) => elemento.id === id
+  );
 
   if (!tarea) {
     return;
@@ -321,7 +348,9 @@ const moverTarea = (id, paso) => {
   tarea.estado = ESTADOS[posicionNueva];
 };
 
-// 4.2 · Añade una tarea nueva al array y la devuelve
+
+// 4.2 · anadirTarea(datos)
+
 const anadirTarea = (datos) => {
   const mayorId = tareas.reduce(
     (maximo, tarea) => Math.max(maximo, tarea.id),
@@ -342,7 +371,9 @@ const anadirTarea = (datos) => {
   return nuevaTarea;
 };
 
-// 4.3 · Elimina las tareas hechas y devuelve cuántas eran
+
+// 4.3 · archivarHechas()
+
 const archivarHechas = () => {
   const cantidadHechas = tareas.filter(
     (tarea) => tarea.estado === 'hecha'
@@ -357,7 +388,9 @@ const archivarHechas = () => {
   return cantidadHechas;
 };
 
-// 4.4 · Eventos del tablero, buscador y botón de archivar
+
+// 4.4 · Eventos del tablero, buscador y botón archivar
+
 tablero.addEventListener('click', (evento) => {
   const boton = evento.target.closest('button[data-accion]');
 
@@ -367,22 +400,30 @@ tablero.addEventListener('click', (evento) => {
 
   const tarjeta = boton.closest('.tarjeta');
   const id = Number(tarjeta.dataset.id);
-  const paso = boton.dataset.accion === 'avanzar' ? 1 : -1;
+
+  const paso =
+    boton.dataset.accion === 'avanzar' ? 1 : -1;
 
   moverTarea(id, paso);
+
   repintar();
 });
+
 
 buscador.addEventListener('input', () => {
   repintar();
 });
 
+
 botonArchivar.addEventListener('click', () => {
   archivarHechas();
+
   repintar();
 });
 
+
 // 4.5 · Envío del formulario
+
 formularioTarea.addEventListener('submit', (evento) => {
   evento.preventDefault();
 
@@ -395,7 +436,10 @@ formularioTarea.addEventListener('submit', (evento) => {
     formularioTarea.elements.prioridad
   ];
 
-  const resultados = campos.map((campo) => validarCampo(campo));
+  const resultados = campos.map(
+    (campo) => validarCampo(campo)
+  );
+
   const primerCampoInvalido = campos.find(
     (campo, indice) => !resultados[indice]
   );
@@ -405,7 +449,8 @@ formularioTarea.addEventListener('submit', (evento) => {
     return;
   }
 
-  const titulo = formularioTarea.elements.titulo.value.trim();
+  const titulo =
+    formularioTarea.elements.titulo.value.trim();
 
   anadirTarea({
     titulo,
@@ -415,10 +460,16 @@ formularioTarea.addEventListener('submit', (evento) => {
   });
 
   limpiarFormulario();
+
   repintar();
 
-  mensajeFormulario.textContent = `Tarea añadida: ${titulo}`;
+  mensajeFormulario.textContent =
+    `Tarea añadida: ${titulo}`;
 });
 
-// Primer pintado
+
+// ============================================================
+// PRIMER PINTADO
+// ============================================================
+
 repintar();
